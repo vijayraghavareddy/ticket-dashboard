@@ -47,7 +47,14 @@ This script:
 - creates `.venv` if missing
 - installs dependencies (unless `-SkipInstall` is passed)
 - starts API in WSL on `http://127.0.0.1:8000`
+- **auto-selects the next free port** if port 8000 is already occupied
 - opens the UI in your browser
+
+Use `-Port` to specify a custom port:
+
+```powershell
+.\scripts\start.ps1 -Port 9000
+```
 
 Stop it with:
 
@@ -55,10 +62,38 @@ Stop it with:
 .\scripts\stop.ps1
 ```
 
-Linux/WSL-only start script:
+### Linux / WSL-only
+
+Start the API:
 
 ```bash
-bash scripts/start.sh
+bash scripts/start.sh          # default port 8000
+bash scripts/start.sh 9000     # custom port
+```
+
+If the default port is occupied by another process, the script automatically
+picks the next available port (8001–8020) and prints the URL.
+
+Stop the API:
+
+```bash
+bash scripts/stop.sh
+```
+
+### Port conflicts
+
+Both start scripts detect when the target port is already in use and
+automatically fall back to a nearby free port. The actual URL is printed
+to the terminal. If you need to free the default port manually:
+
+```bash
+# Find the process occupying port 8000
+ss -tlnp 'sport = :8000'
+# or
+lsof -i :8000
+
+# Kill it (replace <PID> with actual PID)
+kill <PID>
 ```
 
 ### 3) Open API docs

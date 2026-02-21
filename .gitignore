@@ -4,3 +4,6 @@ __pycache__/
 .env
 .pytest_cache/
 .vscode/
+
+.ticket_dashboard.log
+.ticket_dashboard.pid
