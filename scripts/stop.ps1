@@ -9,13 +9,13 @@ $linuxPath = "/" + ($Matches[1] -replace '\\', '/')
 $bashCommand = @"
 set +e
 cd '$linuxPath'
-if [ -f .demo_api.pid ]; then
-  PID=`$(cat .demo_api.pid)
+if [ -f .ticket_dashboard.pid ]; then
+  PID=`$(cat .ticket_dashboard.pid)
   kill `$PID >/dev/null 2>&1
-  rm -f .demo_api.pid
+  rm -f .ticket_dashboard.pid
 fi
 pkill -f "uvicorn app.main:app --host 127.0.0.1 --port 8000" >/dev/null 2>&1
-echo "Demo API stopped (if it was running)."
+echo "API stopped (if it was running)."
 "@
 
 $bashCommand = $bashCommand -replace "`r", ""

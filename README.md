@@ -1,4 +1,4 @@
-# Ticketing API (MCP Demo Project)
+# Ticket Dashboard
 
 Python REST API for a ticketing system, intentionally designed with a few **Not Implemented** features so you can demonstrate:
 - GitHub MCP
@@ -15,7 +15,7 @@ Python REST API for a ticketing system, intentionally designed with a few **Not 
 
 ### WSL prerequisite (Ubuntu)
 
-If `start_demo.ps1` fails with missing `venv`/`pip`, install once in WSL:
+If `start.ps1` fails with missing `venv`/`pip`, install once in WSL:
 
 ```bash
 sudo apt update && sudo apt install -y python3-venv python3-pip
@@ -35,12 +35,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### One-command demo start (Windows + WSL)
+### One-command start (Windows + WSL)
 
 From PowerShell in project root:
 
 ```powershell
-.\scripts\start_demo.ps1
+.\scripts\start.ps1
 ```
 
 This script:
@@ -52,13 +52,13 @@ This script:
 Stop it with:
 
 ```powershell
-.\scripts\stop_demo.ps1
+.\scripts\stop.ps1
 ```
 
 Linux/WSL-only start script:
 
 ```bash
-bash scripts/start_demo.sh
+bash scripts/start.sh
 ```
 
 ### 3) Open API docs
@@ -86,7 +86,7 @@ bash scripts/start_demo.sh
 - `POST /tickets/{ticket_id}/assign` - Assign ticket owner
 - `POST /tickets/{ticket_id}/transition` - Move through workflow statuses
 
-## Intentionally Not Implemented (for MCP demos)
+## Intentionally Not Implemented (for MCP workflows)
 
 These endpoints return `501 Not Implemented` by design:
 
@@ -95,7 +95,7 @@ These endpoints return `501 Not Implemented` by design:
 - `POST /integrations/github/create-issue/{ticket_id}`
 - `GET /reports/sla-breaches`
 
-See [mcp_demo/backlog.md](mcp_demo/backlog.md) for suggested demo tasks.
+See [backlog/backlog.md](backlog/backlog.md) for suggested tasks.
 
 ## Example Requests
 
@@ -121,13 +121,13 @@ curl -X POST http://127.0.0.1:8000/tickets/<ticket_id>/transition \
   -d '{"target_status": "in_progress"}'
 ```
 
-Trigger a not-yet-implemented endpoint (demo):
+Trigger a not-yet-implemented endpoint:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/integrations/jira/sync/<ticket_id>
 ```
 
-## Suggested MCP Demo Flow
+## Suggested MCP Workflow
 
 1. Create a ticket in this API.
 2. Call `POST /integrations/jira/sync/{ticket_id}` and show `501` response.
@@ -138,4 +138,4 @@ curl -X POST http://127.0.0.1:8000/integrations/jira/sync/<ticket_id>
 
 ## Notes
 - Persistence is currently in-memory and resets on restart.
-- Auth, audit history, attachments, SLA engine, and external integrations are left out intentionally for MCP demonstration.
+- Auth, audit history, attachments, SLA engine, and external integrations are left out intentionally for MCP workflows.

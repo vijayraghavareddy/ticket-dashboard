@@ -25,8 +25,8 @@ fi
 if pgrep -f "uvicorn app.main:app --host 127.0.0.1 --port 8000" >/dev/null 2>&1; then
   echo "API already running on http://127.0.0.1:8000"
 else
-  nohup .venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 > .demo_api.log 2>&1 &
-  echo $! > .demo_api.pid
+  nohup .venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 > .ticket_dashboard.log 2>&1 &
+  echo $! > .ticket_dashboard.pid
   echo "API started on http://127.0.0.1:8000"
 fi
 "@
@@ -36,7 +36,7 @@ $bashCommand = $bashCommand -replace "`r", ""
 wsl -e bash -lc "$bashCommand"
 
 if ($LASTEXITCODE -ne 0) {
-  throw "Failed to start demo API in WSL. See errors above."
+  throw "Failed to start API in WSL. See errors above."
 }
 
 Start-Sleep -Seconds 1
@@ -45,5 +45,5 @@ if (-not $NoBrowser) {
     Start-Process "http://127.0.0.1:8000/"
 }
 
-Write-Host "Demo API is available at http://127.0.0.1:8000/"
-Write-Host "Logs: .demo_api.log (inside WSL repo root)"
+Write-Host "API is available at http://127.0.0.1:8000/"
+Write-Host "Logs: .ticket_dashboard.log (inside WSL repo root)"

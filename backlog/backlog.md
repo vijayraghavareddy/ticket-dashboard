@@ -1,4 +1,4 @@
-# MCP Demo Backlog
+# Ticket Dashboard Backlog
 
 Use these as example work items to create/manage with MCP.
 

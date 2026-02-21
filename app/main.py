@@ -9,7 +9,7 @@ from app.api.routes.reports import router as reports_router
 from app.api.routes.tickets import router as tickets_router
 
 app = FastAPI(
-    title="Ticketing API (MCP Demo)",
+    title="Ticket Dashboard",
     version="0.1.0",
     description=(
         "A lightweight ticketing REST API with intentionally unimplemented features "
