@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticketing API UI</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <link rel="stylesheet" href="/ui/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Ticketing API UI</h1>
+      <p>Interactive frontend for your ticketing endpoints and MCP demo placeholders.</p>
+
+      <section>
+        <h2>Create Ticket</h2>
+        <form id="create-ticket-form">
+          <div class="grid">
+            <input id="title" name="title" placeholder="Title" required minlength="4" />
+            <input id="reporter" name="reporter" placeholder="Reporter" required minlength="2" />
+          </div>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Description"
+            required
+            minlength="8"
+          ></textarea>
+          <div class="grid">
+            <select id="priority" name="priority">
+              <option value="low">low</option>
+              <option value="medium" selected>medium</option>
+              <option value="high">high</option>
+              <option value="critical">critical</option>
+            </select>
+            <input id="assignee" name="assignee" placeholder="Assignee (optional)" />
+          </div>
+          <input id="tags" name="tags" placeholder="Tags (comma-separated)" />
+          <button type="submit">Create Ticket</button>
+        </form>
+      </section>
+
+      <section>
+        <div class="toolbar">
+          <h2>Tickets</h2>
+          <div class="toolbar-actions">
+            <select id="status-filter">
+              <option value="">All statuses</option>
+              <option value="open">open</option>
+              <option value="in_progress">in_progress</option>
+              <option value="blocked">blocked</option>
+              <option value="resolved">resolved</option>
+              <option value="closed">closed</option>
+            </select>
+            <button id="refresh-tickets" type="button">Refresh</button>
+          </div>
+        </div>
+        <div id="tickets" class="ticket-list"></div>
+      </section>
+
+      <section>
+        <h2>MCP Demo Endpoints (Expected 501)</h2>
+        <form id="integration-form" class="grid">
+          <input id="integration-ticket-id" placeholder="Ticket ID" required />
+          <select id="integration-action">
+            <option value="jira">Jira Sync</option>
+            <option value="github">GitHub Issue Sync</option>
+            <option value="testrail">TestRail Push</option>
+          </select>
+          <button type="submit">Call Endpoint</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Response</h2>
+        <pre id="response-box">Ready.</pre>
+      </section>
+    </main>
+
+    <template id="ticket-card-template">
+      <article>
+        <header class="ticket-header">
+          <strong class="ticket-title"></strong>
+          <small class="ticket-meta"></small>
+        </header>
+        <p class="ticket-description"></p>
+        <p class="ticket-tags"></p>
+        <div class="ticket-actions">
+          <input class="comment-input" placeholder="Add comment" />
+          <button class="comment-btn" type="button">Comment</button>
+          <input class="assignee-input" placeholder="Assignee" />
+          <button class="assign-btn" type="button">Assign</button>
+          <select class="transition-select">
+            <option value="open">open</option>
+            <option value="in_progress">in_progress</option>
+            <option value="blocked">blocked</option>
+            <option value="resolved">resolved</option>
+            <option value="closed">closed</option>
+          </select>
+          <button class="transition-btn" type="button">Transition</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="/ui/app.js" defer></script>
+  </body>
+</html>

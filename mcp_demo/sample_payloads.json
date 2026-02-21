@@ -1,0 +1,18 @@
+{
+  "tickets": [
+    {
+      "title": "Checkout fails for EU cards",
+      "description": "500 error on payment API for EU-issued cards in staging.",
+      "reporter": "qa.lead",
+      "priority": "high",
+      "tags": ["payments", "staging"]
+    },
+    {
+      "title": "Email notifications delayed",
+      "description": "Incident alerts are delivered after 12-15 minutes.",
+      "reporter": "sre.engineer",
+      "priority": "medium",
+      "tags": ["notifications", "ops"]
+    }
+  ]
+}
