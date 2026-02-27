@@ -1,0 +1,999 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ticket Dashboard",
+    "description": "A lightweight ticketing REST API with intentionally unimplemented features to demonstrate GitHub MCP, Jira MCP, and TestRail MCP workflows.",
+    "contact": {
+      "name": "Ticket Dashboard Team"
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Health check",
+        "description": "Returns service availability for uptime checks.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Create ticket",
+        "description": "Creates a new ticket with default status `open` unless explicitly provided by workflow updates.",
+        "operationId": "create_ticket_tickets_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "List tickets",
+        "description": "Returns all tickets, optionally filtered by `status` query parameter.",
+        "operationId": "list_tickets_tickets_get",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TicketRead"
+                  },
+                  "title": "Response List Tickets Tickets Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/{ticket_id}": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Get ticket by ID",
+        "operationId": "get_ticket_tickets__ticket_id__get",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Update ticket",
+        "description": "Partially updates ticket fields such as title, description, status, assignee, priority, and tags.",
+        "operationId": "update_ticket_tickets__ticket_id__patch",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/{ticket_id}/comments": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Add comment",
+        "description": "Appends a new comment to a ticket and returns the updated ticket.",
+        "operationId": "add_comment_tickets__ticket_id__comments_post",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/{ticket_id}/assign": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Assign ticket",
+        "description": "Sets or changes the assignee for a ticket.",
+        "operationId": "assign_ticket_tickets__ticket_id__assign_post",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTicketRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/{ticket_id}/transition": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "summary": "Transition ticket status",
+        "description": "Moves a ticket to a new status according to allowed workflow transitions.",
+        "operationId": "transition_ticket_tickets__ticket_id__transition_post",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status transition"
+          },
+          "404": {
+            "description": "Ticket not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/integrations/jira/sync/{ticket_id}": {
+      "post": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Sync ticket to Jira (planned)",
+        "description": "Placeholder endpoint for future Jira synchronization. Returns 501 by design.",
+        "operationId": "sync_ticket_to_jira_integrations_jira_sync__ticket_id__post",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Sync Ticket To Jira Integrations Jira Sync  Ticket Id  Post"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/integrations/testrail/push/{ticket_id}": {
+      "post": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Push ticket to TestRail (planned)",
+        "description": "Placeholder endpoint for future TestRail synchronization. Returns 501 by design.",
+        "operationId": "push_ticket_to_testrail_integrations_testrail_push__ticket_id__post",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Push Ticket To Testrail Integrations Testrail Push  Ticket Id  Post"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/integrations/github/create-issue/{ticket_id}": {
+      "post": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Create GitHub issue from ticket (planned)",
+        "description": "Placeholder endpoint for future GitHub issue creation. Returns 501 by design.",
+        "operationId": "create_github_issue_for_ticket_integrations_github_create_issue__ticket_id__post",
+        "parameters": [
+          {
+            "name": "ticket_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ticket Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Create Github Issue For Ticket Integrations Github Create Issue  Ticket Id  Post"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/sla-breaches": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "List SLA breaches (planned)",
+        "description": "Placeholder endpoint for SLA breach reporting. Returns 501 by design.",
+        "operationId": "get_sla_breaches_reports_sla_breaches_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Sla Breaches Reports Sla Breaches Get"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AssignTicketRequest": {
+        "properties": {
+          "assignee": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 2,
+            "title": "Assignee"
+          }
+        },
+        "type": "object",
+        "required": [
+          "assignee"
+        ],
+        "title": "AssignTicketRequest",
+        "example": {
+          "assignee": "sre.engineer"
+        }
+      },
+      "CommentCreate": {
+        "properties": {
+          "author": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 2,
+            "title": "Author"
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body"
+          }
+        },
+        "type": "object",
+        "required": [
+          "author",
+          "body"
+        ],
+        "title": "CommentCreate",
+        "example": {
+          "author": "qa.lead",
+          "body": "Observed intermittent timeout when retrying checkout flow."
+        }
+      },
+      "CommentRead": {
+        "properties": {
+          "author": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 2,
+            "title": "Author"
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Body"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "author",
+          "body",
+          "created_at"
+        ],
+        "title": "CommentRead",
+        "example": {
+          "author": "qa.lead",
+          "body": "Observed intermittent timeout when retrying checkout flow."
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "TicketCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 4,
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 8,
+            "title": "Description"
+          },
+          "reporter": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 2,
+            "title": "Reporter"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TicketPriority",
+            "default": "medium"
+          },
+          "assignee": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "reporter"
+        ],
+        "title": "TicketCreate",
+        "example": {
+          "assignee": "backend.dev",
+          "description": "Payments fail with a 500 when using EU-issued cards in staging.",
+          "priority": "high",
+          "reporter": "qa.lead",
+          "tags": [
+            "payments",
+            "staging"
+          ],
+          "title": "Checkout fails for EU cards"
+        }
+      },
+      "TicketPriority": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "critical"
+        ],
+        "title": "TicketPriority"
+      },
+      "TicketRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "reporter": {
+            "type": "string",
+            "title": "Reporter"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TicketPriority"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TicketStatus"
+          },
+          "assignee": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "comments": {
+            "items": {
+              "$ref": "#/components/schemas/CommentRead"
+            },
+            "type": "array",
+            "title": "Comments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "reporter",
+          "priority",
+          "status",
+          "assignee",
+          "tags",
+          "created_at",
+          "updated_at",
+          "comments"
+        ],
+        "title": "TicketRead",
+        "example": {
+          "assignee": "backend.dev",
+          "comments": [
+            {
+              "author": "qa.lead",
+              "body": "Issue reproduced consistently in staging.",
+              "created_at": "2026-02-26T09:03:00Z"
+            }
+          ],
+          "created_at": "2026-02-26T09:00:00Z",
+          "description": "Payments fail with a 500 when using EU-issued cards in staging.",
+          "id": "4c312f79-4ee8-4613-9f67-5bc320bf1b74",
+          "priority": "high",
+          "reporter": "qa.lead",
+          "status": "in_progress",
+          "tags": [
+            "payments",
+            "staging"
+          ],
+          "title": "Checkout fails for EU cards",
+          "updated_at": "2026-02-26T09:05:00Z"
+        }
+      },
+      "TicketStatus": {
+        "type": "string",
+        "enum": [
+          "open",
+          "in_progress",
+          "blocked",
+          "resolved",
+          "closed"
+        ],
+        "title": "TicketStatus"
+      },
+      "TicketUpdate": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 4
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000,
+                "minLength": 8
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TicketPriority"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TicketStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "assignee": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tags"
+          }
+        },
+        "type": "object",
+        "title": "TicketUpdate",
+        "example": {
+          "assignee": "payments.oncall",
+          "priority": "critical",
+          "tags": [
+            "payments",
+            "incident"
+          ]
+        }
+      },
+      "TransitionStatusRequest": {
+        "properties": {
+          "target_status": {
+            "$ref": "#/components/schemas/TicketStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "target_status"
+        ],
+        "title": "TransitionStatusRequest",
+        "example": {
+          "target_status": "in_progress"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "System",
+      "description": "Service health and runtime availability endpoints."
+    },
+    {
+      "name": "Tickets",
+      "description": "Ticket lifecycle operations including CRUD, comments, assignment, and transitions."
+    },
+    {
+      "name": "Integrations",
+      "description": "Planned integration endpoints that intentionally return 501 for MCP workflows."
+    },
+    {
+      "name": "Reports",
+      "description": "Planned reporting endpoints exposed for future implementation."
+    }
+  ]
+}

@@ -3,7 +3,12 @@ from fastapi import APIRouter, HTTPException, status
 router = APIRouter(prefix="/integrations", tags=["Integrations"])
 
 
-@router.post("/jira/sync/{ticket_id}")
+@router.post(
+    "/jira/sync/{ticket_id}",
+    summary="Sync ticket to Jira (planned)",
+    description="Placeholder endpoint for future Jira synchronization. Returns 501 by design.",
+    responses={501: {"description": "Not implemented"}},
+)
 def sync_ticket_to_jira(ticket_id: str) -> dict:
     raise HTTPException(
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
@@ -16,7 +21,12 @@ def sync_ticket_to_jira(ticket_id: str) -> dict:
     )
 
 
-@router.post("/testrail/push/{ticket_id}")
+@router.post(
+    "/testrail/push/{ticket_id}",
+    summary="Push ticket to TestRail (planned)",
+    description="Placeholder endpoint for future TestRail synchronization. Returns 501 by design.",
+    responses={501: {"description": "Not implemented"}},
+)
 def push_ticket_to_testrail(ticket_id: str) -> dict:
     raise HTTPException(
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
@@ -29,7 +39,12 @@ def push_ticket_to_testrail(ticket_id: str) -> dict:
     )
 
 
-@router.post("/github/create-issue/{ticket_id}")
+@router.post(
+    "/github/create-issue/{ticket_id}",
+    summary="Create GitHub issue from ticket (planned)",
+    description="Placeholder endpoint for future GitHub issue creation. Returns 501 by design.",
+    responses={501: {"description": "Not implemented"}},
+)
 def create_github_issue_for_ticket(ticket_id: str) -> dict:
     raise HTTPException(
         status_code=status.HTTP_501_NOT_IMPLEMENTED,

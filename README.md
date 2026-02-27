@@ -174,3 +174,14 @@ curl -X POST http://127.0.0.1:8000/integrations/jira/sync/<ticket_id>
 ## Notes
 - Persistence is currently in-memory and resets on restart.
 - Auth, audit history, attachments, SLA engine, and external integrations are left out intentionally for MCP workflows.
+
+## Additional Documentation
+
+- Swagger/OpenAPI guide: [docs/SWAGGER.md](docs/SWAGGER.md)
+- API sequence diagram: [docs/SEQUENCE_DIAGRAM.md](docs/SEQUENCE_DIAGRAM.md)
+
+To export a tracked OpenAPI snapshot file:
+
+```bash
+python scripts/export_openapi.py
+```
