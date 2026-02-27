@@ -187,6 +187,11 @@ The following implementation stories are tracked in Jira (project `TD`, assigned
 | [TD-10](https://circuitmind.atlassian.net/browse/TD-10) | Add Persistent Database Storage |
 | [TD-11](https://circuitmind.atlassian.net/browse/TD-11) | Add Authentication and Authorization |
 
+## Documentation Links
+
+- Swagger/OpenAPI guide: [SWAGGER.md](SWAGGER.md)
+- Sequence diagram: [SEQUENCE_DIAGRAM.md](SEQUENCE_DIAGRAM.md)
+
 ## Design Decisions
 
 - **In-memory storage by choice** — keeps setup friction near zero; ideal for demos and local development.

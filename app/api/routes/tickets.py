@@ -44,20 +44,36 @@ def _to_ticket_read(ticket: Ticket) -> TicketRead:
     )
 
 
-@router.post("", response_model=TicketRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=TicketRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create ticket",
+    description="Creates a new ticket with default status `open` unless explicitly provided by workflow updates.",
+)
 def create_ticket(payload: TicketCreate) -> TicketRead:
     ticket = Ticket(**payload.model_dump())
     created = repo.create_ticket(ticket)
     return _to_ticket_read(created)
 
 
-@router.get("", response_model=list[TicketRead])
+@router.get(
+    "",
+    response_model=list[TicketRead],
+    summary="List tickets",
+    description="Returns all tickets, optionally filtered by `status` query parameter.",
+)
 def list_tickets(status_filter: str | None = Query(default=None, alias="status")) -> list[TicketRead]:
     tickets = repo.list_tickets(status=status_filter)
     return [_to_ticket_read(ticket) for ticket in tickets]
 
 
-@router.get("/{ticket_id}", response_model=TicketRead)
+@router.get(
+    "/{ticket_id}",
+    response_model=TicketRead,
+    summary="Get ticket by ID",
+    responses={404: {"description": "Ticket not found"}},
+)
 def get_ticket(ticket_id: str) -> TicketRead:
     try:
         ticket = repo.get_ticket(ticket_id)
@@ -66,7 +82,13 @@ def get_ticket(ticket_id: str) -> TicketRead:
     return _to_ticket_read(ticket)
 
 
-@router.patch("/{ticket_id}", response_model=TicketRead)
+@router.patch(
+    "/{ticket_id}",
+    response_model=TicketRead,
+    summary="Update ticket",
+    description="Partially updates ticket fields such as title, description, status, assignee, priority, and tags.",
+    responses={404: {"description": "Ticket not found"}},
+)
 def update_ticket(ticket_id: str, payload: TicketUpdate) -> TicketRead:
     try:
         updated = repo.update_ticket(ticket_id, **payload.model_dump(exclude_unset=True))
@@ -75,7 +97,13 @@ def update_ticket(ticket_id: str, payload: TicketUpdate) -> TicketRead:
     return _to_ticket_read(updated)
 
 
-@router.post("/{ticket_id}/comments", response_model=TicketRead)
+@router.post(
+    "/{ticket_id}/comments",
+    response_model=TicketRead,
+    summary="Add comment",
+    description="Appends a new comment to a ticket and returns the updated ticket.",
+    responses={404: {"description": "Ticket not found"}},
+)
 def add_comment(ticket_id: str, payload: CommentCreate) -> TicketRead:
     try:
         ticket = repo.add_comment(ticket_id, Comment(**payload.model_dump()))
@@ -84,7 +112,13 @@ def add_comment(ticket_id: str, payload: CommentCreate) -> TicketRead:
     return _to_ticket_read(ticket)
 
 
-@router.post("/{ticket_id}/assign", response_model=TicketRead)
+@router.post(
+    "/{ticket_id}/assign",
+    response_model=TicketRead,
+    summary="Assign ticket",
+    description="Sets or changes the assignee for a ticket.",
+    responses={404: {"description": "Ticket not found"}},
+)
 def assign_ticket(ticket_id: str, payload: AssignTicketRequest) -> TicketRead:
     try:
         ticket = repo.update_ticket(ticket_id, assignee=payload.assignee)
@@ -93,7 +127,13 @@ def assign_ticket(ticket_id: str, payload: AssignTicketRequest) -> TicketRead:
     return _to_ticket_read(ticket)
 
 
-@router.post("/{ticket_id}/transition", response_model=TicketRead)
+@router.post(
+    "/{ticket_id}/transition",
+    response_model=TicketRead,
+    summary="Transition ticket status",
+    description="Moves a ticket to a new status according to allowed workflow transitions.",
+    responses={400: {"description": "Invalid status transition"}, 404: {"description": "Ticket not found"}},
+)
 def transition_ticket(ticket_id: str, payload: TransitionStatusRequest) -> TicketRead:
     try:
         current = repo.get_ticket(ticket_id)
