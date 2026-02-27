@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Query, status
 
 from app.models import Comment, Ticket, TicketStatus
-from app.repository import TicketNotFoundError, TicketRepository
+from app.repository import TicketNotFoundError
 from app.schemas import (
     AssignTicketRequest,
     CommentCreate,
@@ -12,9 +12,9 @@ from app.schemas import (
     TicketUpdate,
     TransitionStatusRequest,
 )
+from app.state import repo
 
 router = APIRouter(prefix="/tickets", tags=["Tickets"])
-repo = TicketRepository()
 
 ALLOWED_TRANSITIONS: dict[TicketStatus, set[TicketStatus]] = {
     TicketStatus.open: {TicketStatus.in_progress, TicketStatus.blocked, TicketStatus.closed},

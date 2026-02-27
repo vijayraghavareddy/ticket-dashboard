@@ -2,7 +2,7 @@
 
 ## Overview
 
-Ticket Dashboard is a lightweight **ticketing REST API** built with Python and [FastAPI](https://fastapi.tiangolo.com/). It provides a complete CRUD interface for managing support/engineering tickets, including comments, assignments, and status-workflow transitions. The service also exposes stub integration endpoints for Jira, GitHub, and TestRail that are intentionally left unimplemented so they can be built out as part of MCP (Model Context Protocol) workflows.
+Ticket Dashboard is a lightweight **ticketing REST API** built with Python and [FastAPI](https://fastapi.tiangolo.com/). It provides a complete CRUD interface for managing support/engineering tickets, including comments, assignments, and status-workflow transitions. The service also exposes integration endpoints for Jira, GitHub, and TestRail; some remain intentionally unimplemented so they can be built out as part of MCP (Model Context Protocol) workflows.
 
 The project ships with a browser-based UI served as static files and auto-generated OpenAPI (Swagger) documentation.
 
@@ -34,7 +34,7 @@ The project ships with a browser-based UI served as static files and auto-genera
 | **Schemas** | `app/schemas.py` | Pydantic request/response models for API validation and serialization |
 | **Repository** | `app/repository.py` | Thread-safe in-memory store for tickets (dict + `RLock`) |
 | **Ticket routes** | `app/api/routes/tickets.py` | Full CRUD + comment, assign, and transition endpoints |
-| **Integration routes** | `app/api/routes/integrations.py` | Stub endpoints for Jira sync, TestRail push, and GitHub issue creation (all return 501) |
+| **Integration routes** | `app/api/routes/integrations.py` | TestRail run-status endpoint plus stub endpoints for Jira sync, TestRail push, and GitHub issue creation |
 | **Report routes** | `app/api/routes/reports.py` | Stub endpoint for SLA breach reports (returns 501) |
 | **Static UI** | `app/static/` | Single-page HTML/CSS/JS dashboard for interacting with the API |
 
@@ -115,10 +115,11 @@ Allowed transitions:
 | `POST` | `/tickets/{ticket_id}/assign` | Assign a ticket to a user |
 | `POST` | `/tickets/{ticket_id}/transition` | Transition ticket status |
 
-### Integrations (Stub — 501 Not Implemented)
+### Integrations
 
 | Method | Path | Description |
 |--------|------|-------------|
+| `GET` | `/integrations/testrail/run-status/{ticket_id}` | Get TestRail run status projection for a ticket |
 | `POST` | `/integrations/jira/sync/{ticket_id}` | Sync ticket to Jira |
 | `POST` | `/integrations/testrail/push/{ticket_id}` | Push ticket to TestRail |
 | `POST` | `/integrations/github/create-issue/{ticket_id}` | Create GitHub issue from ticket |

@@ -53,3 +53,12 @@ class TicketRead(BaseModel):
     created_at: datetime
     updated_at: datetime
     comments: list[CommentRead]
+
+
+class TestRailRunStatusRead(BaseModel):
+    ticket_id: str
+    ticket_status: TicketStatus
+    testrail_linked: bool
+    run_status: str
+    run_id: Optional[str] = None
+    next_action: str

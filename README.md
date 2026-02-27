@@ -121,6 +121,9 @@ kill <PID>
 - `POST /tickets/{ticket_id}/assign` - Assign ticket owner
 - `POST /tickets/{ticket_id}/transition` - Move through workflow statuses
 
+### Integrations
+- `GET /integrations/testrail/run-status/{ticket_id}` - Get TestRail run status projection for a ticket
+
 ## Intentionally Not Implemented (for MCP workflows)
 
 These endpoints return `501 Not Implemented` by design:
